@@ -303,7 +303,6 @@ public class SimpleIndicator extends View {
      * 点击后重绘UI
      */
     private void executeClick(float x, float y) {
-
         if (indicatorBeans == null) {return;}
         int scrollX = getScrollX();
         int size = indicatorBeans.size();
