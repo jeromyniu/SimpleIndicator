@@ -325,7 +325,6 @@ public class SimpleIndicator extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //Log.e(tag, "onDraw =========");
 
         if (indicatorBeans == null || indicatorBeans.size() == 0) {
             return;
