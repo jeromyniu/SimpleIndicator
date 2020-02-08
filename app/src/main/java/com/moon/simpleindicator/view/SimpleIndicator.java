@@ -694,6 +694,7 @@ public class SimpleIndicator extends View {
                 public void onAnimationRepeat(Animator animation) {
                 }
             });
+
             autoScrollAnim.start();
         }
     }
