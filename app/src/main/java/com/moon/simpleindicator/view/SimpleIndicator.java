@@ -304,6 +304,7 @@ public class SimpleIndicator extends View {
      */
     private void executeClick(float x, float y) {
         if (indicatorBeans == null) {return;}
+        
         int scrollX = getScrollX();
         int size = indicatorBeans.size();
         int selectedIndex = -1;
