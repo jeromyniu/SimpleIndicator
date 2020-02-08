@@ -3,6 +3,7 @@ package com.moon.simpleindicator.view;
 import java.util.HashMap;
 import java.util.List;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
@@ -22,6 +23,7 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
@@ -624,6 +626,8 @@ public class SimpleIndicator extends View {
     //绘制完成后是否需要执行自动滑动
     boolean needExecuteAutoScroll = false;
 
+    private ValueAnimator autoScrollAnim;
+
     /**
      * 如果被选中的item未完全显示
      * 滚动一定距离把选中的item显示出来
@@ -655,7 +659,42 @@ public class SimpleIndicator extends View {
         }
 
         if (scrollDistanceX != 0) {
-            scrollBy(scrollDistanceX, 0);
+            if (autoScrollAnim != null && autoScrollAnim.isRunning()) {
+                autoScrollAnim.cancel();
+            }
+
+            final int finalScrollX = getScrollX() + scrollDistanceX;
+            autoScrollAnim = ValueAnimator.ofInt(getScrollX(), finalScrollX)
+                    .setDuration(80);
+            autoScrollAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+            autoScrollAnim.addUpdateListener(new AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int targetScrollX = (int)animation.getAnimatedValue();
+                    SimpleIndicator.this.scrollTo(targetScrollX, 0);
+                }
+            });
+
+            autoScrollAnim.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    //保证动画执行过程中被cancel时最终位置的的正确性
+                    SimpleIndicator.this.scrollTo(finalScrollX, 0);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            });
+            autoScrollAnim.start();
         }
     }
 
